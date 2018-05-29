@@ -138,6 +138,26 @@ namespace SC2API_CSharp
             await proxy.Ping();
         }
 
+        public async Task RequestLeaveGame()
+        {
+            Request requestLeaveGame = new Request();
+            requestLeaveGame.LeaveGame = new RequestLeaveGame();
+            await proxy.SendRequest(requestLeaveGame);
+        }
+
+        public async Task SendRequest(Request request)
+        {
+            await proxy.SendRequest(request);
+        }
+
+        public async Task<ResponseQuery> SendQuery(RequestQuery query)
+        {
+            Request request = new Request();
+            request.Query = query;
+            Response response = await proxy.SendRequest(request);
+            return response.Query;
+        }
+
         public async Task Run(Bot bot, uint playerId)
         {
             
@@ -186,6 +206,7 @@ namespace SC2API_CSharp
             await Connect(gamePort);
             uint playerId = await JoinGameLadder(myRace, startPort);
             await Run(bot, playerId);
+            await RequestLeaveGame();
         }
 
         public async Task RunLadder(Bot bot, Race myRace, string[] args)
