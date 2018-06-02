@@ -165,6 +165,8 @@ namespace SC2API_CSharp
             gameInfoReq.GameInfo = new RequestGameInfo();
 
             Response gameInfoResponse = await proxy.SendRequest(gameInfoReq);
+
+            bool start = true;
             
             while (true)
             {
@@ -175,9 +177,18 @@ namespace SC2API_CSharp
                 ResponseObservation observation = response.Observation;
 
                 if (response.Status == Status.Ended || response.Status == Status.Quit)
+                {
+                    bot.OnEnd(gameInfoResponse.GameInfo, observation, playerId, observation.PlayerResult[(int)playerId - 1].Result);
                     break;
+                }
+
+                if (start)
+                {
+                    start = false;
+                    bot.OnStart(gameInfoResponse.GameInfo, observation, playerId);
+                }
                 
-                IEnumerable<SC2APIProtocol.Action> actions = bot.onFrame(gameInfoResponse.GameInfo, observation, playerId);
+                IEnumerable<SC2APIProtocol.Action> actions = bot.OnFrame(gameInfoResponse.GameInfo, observation, playerId);
 
                 Request actionRequest = new Request();
                 actionRequest.Action = new RequestAction();

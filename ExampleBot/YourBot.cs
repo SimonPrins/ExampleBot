@@ -10,11 +10,17 @@ namespace ExampleBot
 {
     class YourBot : Bot
     {
-        public IEnumerable<SC2APIProtocol.Action> onFrame(ResponseGameInfo gameInfo, ResponseObservation observation, uint playerId)
+        public void OnStart(ResponseGameInfo gameInfo, ResponseObservation observation, uint playerId)
+        { }
+    
+        public IEnumerable<SC2APIProtocol.Action> OnFrame(ResponseGameInfo gameInfo, ResponseObservation observation, uint playerId)
         {
             List<SC2APIProtocol.Action> actions = new List<SC2APIProtocol.Action>();
 
             return actions;
         }
+        
+        public void OnEnd(ResponseGameInfo gameInfo, ResponseObservation observation, uint playerId, Result result)
+        { }
     }
 }
