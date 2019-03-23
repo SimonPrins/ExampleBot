@@ -18,9 +18,7 @@ namespace SC2API_CSharp
         string starcraftDir;
 
         public GameConnection()
-        {
-            readSettings();
-        }
+        { }
 
         public void StartSC2Instance(int port)
         {
@@ -40,7 +38,7 @@ namespace SC2API_CSharp
                     await proxy.Connect(address, port);
                     return;
                 }
-                catch (WebSocketException e) { }
+                catch (WebSocketException) { }
                 Thread.Sleep(2000);
             }
             throw new Exception("Unable to make a connection.");
@@ -51,7 +49,7 @@ namespace SC2API_CSharp
             RequestCreateGame createGame = new RequestCreateGame();
             createGame.Realtime = false;
 
-            string mapPath = Path.Combine(starcraftDir, "maps", mapName);
+            string mapPath = Path.Combine(starcraftDir, "Maps", mapName);
             if (!File.Exists(mapPath))
                 throw new Exception("Could not find map at " + mapPath);
             createGame.LocalMap = new LocalMap();
@@ -158,13 +156,22 @@ namespace SC2API_CSharp
             return response.Query;
         }
 
-        public async Task Run(Bot bot, uint playerId)
+        public async Task Run(Bot bot, uint playerId, string opponentID)
         {
-            
             Request gameInfoReq = new Request();
             gameInfoReq.GameInfo = new RequestGameInfo();
 
             Response gameInfoResponse = await proxy.SendRequest(gameInfoReq);
+
+            Request gameDataRequest = new Request();
+            gameDataRequest.Data = new RequestData();
+            gameDataRequest.Data.UnitTypeId = true;
+            gameDataRequest.Data.AbilityId = true;
+            gameDataRequest.Data.BuffId = true;
+            gameDataRequest.Data.EffectId = true;
+            gameDataRequest.Data.UpgradeId = true;
+
+            Response dataResponse = await proxy.SendRequest(gameDataRequest);
 
             bool start = true;
             
@@ -176,19 +183,24 @@ namespace SC2API_CSharp
 
                 ResponseObservation observation = response.Observation;
 
+                if (observation == null)
+                {
+                    bot.OnEnd(observation, Result.Unset);
+                    break;
+                }
                 if (response.Status == Status.Ended || response.Status == Status.Quit)
                 {
-                    bot.OnEnd(gameInfoResponse.GameInfo, observation, playerId, observation.PlayerResult[(int)playerId - 1].Result);
+                    bot.OnEnd(observation, observation.PlayerResult[(int)playerId - 1].Result);
                     break;
                 }
 
                 if (start)
                 {
                     start = false;
-                    bot.OnStart(gameInfoResponse.GameInfo, observation, playerId);
+                    bot.OnStart(gameInfoResponse.GameInfo, dataResponse.Data, observation, playerId, opponentID);
                 }
                 
-                IEnumerable<SC2APIProtocol.Action> actions = bot.OnFrame(gameInfoResponse.GameInfo, observation, playerId);
+                IEnumerable<SC2APIProtocol.Action> actions = bot.OnFrame(observation);
 
                 Request actionRequest = new Request();
                 actionRequest.Action = new RequestAction();
@@ -205,25 +217,25 @@ namespace SC2API_CSharp
         
         public async Task RunSinglePlayer(Bot bot, string map, Race myRace, Race opponentRace, Difficulty opponentDifficulty)
         {
+            readSettings();
             StartSC2Instance(5678);
             await Connect(5678);
             await CreateGame(map, opponentRace, opponentDifficulty);
             uint playerId = await JoinGame(myRace);
-            await Run(bot, playerId);
+            await Run(bot, playerId, null);
         }
 
-        public async Task RunLadder(Bot bot, Race myRace, int gamePort, int startPort)
+        public async Task RunLadder(Bot bot, Race myRace, int gamePort, int startPort, String opponentID)
         {
             await Connect(gamePort);
             uint playerId = await JoinGameLadder(myRace, startPort);
-            await Run(bot, playerId);
-            await RequestLeaveGame();
+            await Run(bot, playerId, opponentID);
         }
 
         public async Task RunLadder(Bot bot, Race myRace, string[] args)
         {
             CLArgs clargs = new CLArgs(args);
-            await RunLadder(bot, myRace, clargs.GamePort, clargs.StartPort);
+            await RunLadder(bot, myRace, clargs.GamePort, clargs.StartPort, clargs.OpponentID);
         }
     }
 }

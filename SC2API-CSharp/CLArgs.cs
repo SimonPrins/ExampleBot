@@ -23,6 +23,8 @@ namespace SC2API_CSharp
                     startPort = int.Parse(args[i + 1]);
                 else if (args[i] == "-l" || args[i] == "--LadderServer")
                     ladderServer = args[i + 1];
+                else if (args[i] == "--OpponentId")
+                    OpponentID = args[i + 1];
                 else if (args[i] == "-c" || args[i] == "--ComputerOpponent")
                 {
                     if (computerRace == Race.NoRace)
@@ -95,5 +97,6 @@ namespace SC2API_CSharp
         public string LadderServer { get => ladderServer; set => ladderServer = value; }
         public Race ComputerRace { get => computerRace; set => computerRace = value; }
         public Difficulty ComputerDifficulty { get => computerDifficulty; set => computerDifficulty = value; }
+        public string OpponentID { get; set; }
     }
 }
