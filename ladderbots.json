@@ -1,0 +1,11 @@
+{
+  "Bots": {
+    "<YourBotName>": {
+      "Race": "<YourBotRace>",
+      "Type": "DotNetCore",
+      "RootPath": "./",
+      "FileName": "<YourBotName>.dll",
+      "Debug": true
+    }
+  }
+}
