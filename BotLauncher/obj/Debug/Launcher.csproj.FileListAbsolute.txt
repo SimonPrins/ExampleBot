@@ -1,6 +1,0 @@
-D:\Simon\Code\SC2AI\C#\Tyr\Tyr\TyrProxy\bin\Debug\TyrLauncher.exe.config
-D:\Simon\Code\SC2AI\C#\Tyr\Tyr\TyrProxy\bin\Debug\TyrLauncher.exe
-D:\Simon\Code\SC2AI\C#\Tyr\Tyr\TyrProxy\bin\Debug\TyrLauncher.pdb
-D:\Simon\Code\SC2AI\C#\Tyr\Tyr\TyrProxy\obj\Debug\Launcher.csproj.CoreCompileInputs.cache
-D:\Simon\Code\SC2AI\C#\Tyr\Tyr\TyrProxy\obj\Debug\TyrLauncher.exe
-D:\Simon\Code\SC2AI\C#\Tyr\Tyr\TyrProxy\obj\Debug\TyrLauncher.pdb
