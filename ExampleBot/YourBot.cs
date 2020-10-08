@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SC2APIProtocol;
 
-namespace ExampleBot
+namespace SC2Sharp
 {
     class Bot : SC2API_CSharp.Bot
     {

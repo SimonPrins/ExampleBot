@@ -1,7 +1,7 @@
 ﻿using SC2API_CSharp;
 using SC2APIProtocol;
 
-namespace ExampleBot
+namespace SC2Sharp
 {
     class Program
     {
