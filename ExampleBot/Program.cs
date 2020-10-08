@@ -3,7 +3,7 @@ using SC2APIProtocol;
 
 namespace SC2Sharp
 {
-    class Program
+    public class Program
     {
         // Settings for your bot.
         private static Bot bot = new Bot();
@@ -18,7 +18,7 @@ namespace SC2Sharp
          * This will start the Stacraft 2 instance and connect to it.
          * The program can run in single player mode against the standard Blizzard AI, or it can be run against other bots through the ladder.
          */
-        static void Main(string[] args)
+        public static void Run(string[] args)
         {
             if (args.Length == 0)
                 new GameConnection().RunSinglePlayer(bot, mapName, race, opponentRace, opponentDifficulty).Wait();

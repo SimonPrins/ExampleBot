@@ -7,4 +7,6 @@ SC2APIProtocol/bin/
 SC2APIProtocol/obj/
 ExampleBot/bin/
 ExampleBot/obj/
+DotnetCoreRunner/bin/
+DotnetCoreRunner/obj/
 .vs/
