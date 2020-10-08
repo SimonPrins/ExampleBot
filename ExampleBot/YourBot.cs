@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SC2API_CSharp;
+﻿using System.Collections.Generic;
 using SC2APIProtocol;
 
 namespace ExampleBot
 {
-    class YourBot : Bot
+    class Bot : SC2API_CSharp.Bot
     {
-        public void OnStart(ResponseGameInfo gameInfo, ResponseObservation observation, uint playerId)
+        public void OnStart(ResponseGameInfo gameInfo, ResponseData data, ResponsePing pingResponse, ResponseObservation observation, uint playerId, string opponentID)
         { }
     
-        public IEnumerable<SC2APIProtocol.Action> OnFrame(ResponseGameInfo gameInfo, ResponseObservation observation, uint playerId)
+        public IEnumerable<Action> OnFrame(ResponseObservation observation)
         {
-            List<SC2APIProtocol.Action> actions = new List<SC2APIProtocol.Action>();
+            List<Action> actions = new List<Action>();
 
             return actions;
         }
         
-        public void OnEnd(ResponseGameInfo gameInfo, ResponseObservation observation, uint playerId, Result result)
+        public void OnEnd(ResponseObservation observation, Result result)
         { }
     }
 }

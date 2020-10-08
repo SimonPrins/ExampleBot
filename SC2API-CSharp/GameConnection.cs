@@ -90,7 +90,7 @@ namespace SC2API_CSharp
             else
                 throw new Exception("Unable to find ExecuteInfo.txt at " + executeInfo);
         }
-        
+
         public async Task<uint> JoinGame(Race race)
         {
             RequestJoinGame joinGame = new RequestJoinGame();
@@ -110,7 +110,7 @@ namespace SC2API_CSharp
         {
             RequestJoinGame joinGame = new RequestJoinGame();
             joinGame.Race = race;
-            
+
             joinGame.SharedPort = startPort + 1;
             joinGame.ServerPorts = new PortSet();
             joinGame.ServerPorts.GamePort = startPort + 2;
@@ -122,6 +122,7 @@ namespace SC2API_CSharp
 
             joinGame.Options = new InterfaceOptions();
             joinGame.Options.Raw = true;
+            joinGame.Options.ShowCloaked = true;
             joinGame.Options.Score = true;
 
             Request request = new Request();
@@ -131,9 +132,12 @@ namespace SC2API_CSharp
             return response.JoinGame.PlayerId;
         }
 
-        public async Task Ping()
+        public async Task<ResponsePing> Ping()
         {
-            await proxy.Ping();
+            Request request = new Request();
+            request.Ping = new RequestPing();
+            Response response = await proxy.SendRequest(request);
+            return response.Ping;
         }
 
         public async Task RequestLeaveGame()
@@ -173,8 +177,10 @@ namespace SC2API_CSharp
 
             Response dataResponse = await proxy.SendRequest(gameDataRequest);
 
+            ResponsePing pingResponse = await Ping();
+
             bool start = true;
-            
+
             while (true)
             {
                 Request observationRequest = new Request();
@@ -197,9 +203,9 @@ namespace SC2API_CSharp
                 if (start)
                 {
                     start = false;
-                    bot.OnStart(gameInfoResponse.GameInfo, dataResponse.Data, observation, playerId, opponentID);
+                    bot.OnStart(gameInfoResponse.GameInfo, dataResponse.Data, pingResponse, observation, playerId, opponentID);
                 }
-                
+
                 IEnumerable<SC2APIProtocol.Action> actions = bot.OnFrame(observation);
 
                 Request actionRequest = new Request();
@@ -214,7 +220,7 @@ namespace SC2API_CSharp
                 await proxy.SendRequest(stepRequest);
             }
         }
-        
+
         public async Task RunSinglePlayer(Bot bot, string map, Race myRace, Race opponentRace, Difficulty opponentDifficulty)
         {
             readSettings();

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SC2API_CSharp;
+﻿using SC2API_CSharp;
 using SC2APIProtocol;
 
 namespace ExampleBot
@@ -11,7 +6,7 @@ namespace ExampleBot
     class Program
     {
         // Settings for your bot.
-        private static Bot bot = new YourBot();
+        private static Bot bot = new Bot();
         private static Race race = Race.Terran;
 
         // Settings for single player mode.
